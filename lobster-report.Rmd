@@ -24,7 +24,7 @@ This dataset contains two tables. 1) Abundance and size data collected annually 
 ## Exercise: Explore, Clean, and Wrangle Data
 
 Load libraries
-```{r load libraries}
+```{r load libraries, warning=FALSE, message=FALSE}
 library(readr)
 library(dplyr)
 library(ggplot2)
@@ -32,19 +32,19 @@ library(tidyr)
 ```
 
 Read data
-```{r reading data}
+```{r reading data, warning=FALSE, message=FALSE}
 lobster_abundance <-read_csv("data/Lobster_Abundance_All_Years_20220829.csv")
 ```
 
 Convert missing values 
-```{r convert missing values}
+```{r convert missing abundant values}
 lobster_abundance <- lobster_abundance %>% 
   mutate(Size_MM = na_if(SIZE_MM, -99999))
 ```
 
 ## Plotting data
 Playing with Themes and visualizations
-```{r bar graph}
+```{r bar graph, warning=FALSE, message=FALSE}
 lobster_size_lrg <- lobster_abundance %>% 
   filter(YEAR %in% c(2019, 2020, 2021)) %>% 
   mutate(SIZE_BIN = if_else(SIZE_MM <= 70, true = "small", false = "large")) %>% 
@@ -71,14 +71,14 @@ scale_fill_manual(values = c("#008080", "#BC5443"))
 ## Exercise: Explore, Clean, and Wrangle Data
 
 ## Working Data
-```{r load data}
+```{r load data, warning=FALSE, message=FALSE}
 
 lobster_traps <- read_csv("data/Lobster_Trap_Counts_All_Years_20210519.csv")
 
 ```
 
 Convert missing values 
-```{r convert missing values}
+```{r convert missing trap values}
 
 clean_lobster_traps <- lobster_traps %>% 
  mutate(TRAPS = na_if(TRAPS, -99999))
@@ -87,7 +87,7 @@ clean_lobster_traps <- lobster_traps %>%
 
 ## Plotting data
 Playing with Themes and visualizations
-```{r fig.alt= "test"}
+```{r fig.alt= "test", warning=FALSE, message=FALSE}
 lobster_traps_fishing_pressure <- lobster_traps %>% 
     filter(YEAR %in% c(2019, 2020, 2021)) %>%
     mutate(FISHING_PRESSURE = if_else(TRAPS >= 8, true = "high", false = "low")) %>%
