@@ -21,6 +21,7 @@ library(tidyr)
 
 Read data
 ```{r reading data}
-lobster_abundance <- read_csv("data/Lobster_Abundance_All_Years_20220829.csv")
+lobster_abundance <- read_csv("../data/Lobster_Abundance_All_Years_20220829.csv")
 ```
+
 
