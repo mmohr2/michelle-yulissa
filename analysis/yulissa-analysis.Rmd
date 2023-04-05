@@ -10,10 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
-Data analysis from this [insert link] 
 
+Data analysis from this link [<https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-sbc.77.8>]
 
 ## Set up
+
 ```{r load packages, warning=FALSE, message=FALSE}
 library(readr)
 library(dplyr)
@@ -23,10 +24,68 @@ library(tidyr)
 ```
 
 ## Working Data
+
 ```{r load data}
 
 lobster_traps <- read_csv("../data/Lobster_Trap_Counts_All_Years_20210519.csv")
 
+unique(lobster_traps)
 ```
 
+
+## Data Cleaning & Wrangling
+```{r data cleaning}
+
+clean_lobster_traps <- lobster_traps %>% 
+ mutate(TRAPS = na_if(TRAPS, -99999))
+
+```
+
+## Data Visualization
+
+(TRAPS) grouped by year, using ggplot(), geom_histogram(), and facet_wrap(). Use the variable YEAR in facet_wrap(). Use the object lobster_traps.
+```{r data visual}
+
+ggplot(data = lobster_traps, aes(x = TRAPS)) +
+    geom_histogram() +
+    facet_wrap( ~ YEAR)
+```
+
+```{r point-line}
+lobsters_traps_summarize <- lobster_traps %>% 
+  group_by(SITE, YEAR) %>% 
+  summarize(TOTAL_TRAPS = sum(TRAPS, na.rm = TRUE))
+
+
+# line and point plot
+ggplot(data = lobsters_traps_summarize, aes(x = YEAR, y = TOTAL_TRAPS)) +
+    geom_point(aes(color = SITE)) +
+    geom_line(aes(color = SITE))
+```
+
+```{r bar graph}
+lobster_traps_fishing_pressure <- lobster_traps %>% 
+    filter(YEAR %in% c(2019, 2020, 2021)) %>%
+    mutate(FISHING_PRESSURE = if_else(TRAPS >= 8, true = "high", false = "low")) %>%
+    group_by(SITE, FISHING_PRESSURE) %>%
+    summarize(COUNT = n()) %>%
+    drop_na()
+
+# bar plot
+ggplot(data = lobster_traps_fishing_pressure, aes(x = SITE, y = COUNT, fill = FISHING_PRESSURE)) +
+    geom_col()
+
+# dodged bar plot
+ggplot(data = lobster_traps_fishing_pressure, aes(x = SITE, y = COUNT, fill = FISHING_PRESSURE)) +
+    geom_col(position = "dodge")+
+  theme_bw()+
+  labs(
+    title = "Lobster Fishing Pressure 2019-2021", 
+    x = "Sites",
+    y = "Count of Lobsters",
+    fill = "Fishing Pressure") +
+  theme(legend.position = "bottom")
+  
+
+```
 
