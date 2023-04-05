@@ -44,7 +44,13 @@ lobster_abundance <- lobster_abundance %>%
 
 ## Plotting data
 Playing with Themes and visualizations
-```{r}
+```{r bar graph}
+lobster_size_lrg <- lobster_abundance %>% 
+  filter(YEAR %in% c(2019, 2020, 2021)) %>% 
+  mutate(SIZE_BIN = if_else(SIZE_MM <= 70, true = "small", false = "large")) %>% 
+  group_by(SITE, SIZE_BIN) %>% 
+  summarize(COUNT = n()) %>% 
+  drop_na()
 ggplot(data = lobster_size_lrg,
        aes(x = SITE, y = COUNT, 
            fill = SIZE_BIN)) +
@@ -67,7 +73,7 @@ scale_fill_manual(values = c("#008080", "#BC5443"))
 ## Working Data
 ```{r load data}
 
-lobster_traps <- read_csv("../data/Lobster_Trap_Counts_All_Years_20210519.csv")
+lobster_traps <- read_csv("data/Lobster_Trap_Counts_All_Years_20210519.csv")
 
 ```
 
