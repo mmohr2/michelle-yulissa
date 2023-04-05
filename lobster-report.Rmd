@@ -33,7 +33,7 @@ library(tidyr)
 
 Read data
 ```{r reading data}
-lobster_abundance <- read_csv("../data/Lobster_Abundance_All_Years_20220829.csv")
+lobster_abundance <-read_csv("data/Lobster_Abundance_All_Years_20220829.csv")
 ```
 
 Convert missing values 
@@ -42,7 +42,7 @@ lobster_abundance <- lobster_abundance %>%
   mutate(Size_MM = na_if(SIZE_MM, -99999))
 ```
 
-Plotting data
+## Plotting data
 Playing with Themes and visualizations
 ```{r}
 ggplot(data = lobster_size_lrg,
@@ -59,3 +59,45 @@ ggplot(data = lobster_size_lrg,
   scale_y_continuous(breaks = seq(0, 800, 100)) +
 scale_fill_manual(values = c("#008080", "#BC5443"))
 ```
+
+
+### Lobster Trap Count
+## Exercise: Explore, Clean, and Wrangle Data
+
+## Working Data
+```{r load data}
+
+lobster_traps <- read_csv("../data/Lobster_Trap_Counts_All_Years_20210519.csv")
+
+```
+
+Convert missing values 
+```{r convert missing values}
+
+clean_lobster_traps <- lobster_traps %>% 
+ mutate(TRAPS = na_if(TRAPS, -99999))
+
+```
+
+## Plotting data
+Playing with Themes and visualizations
+```{r fig.alt= "test"}
+lobster_traps_fishing_pressure <- lobster_traps %>% 
+    filter(YEAR %in% c(2019, 2020, 2021)) %>%
+    mutate(FISHING_PRESSURE = if_else(TRAPS >= 8, true = "high", false = "low")) %>%
+    group_by(SITE, FISHING_PRESSURE) %>%
+    summarize(COUNT = n()) %>%
+    drop_na()
+
+ggplot(data = lobster_traps_fishing_pressure, aes(x = SITE, y = COUNT, fill = FISHING_PRESSURE)) +
+    geom_col(position = "dodge")+
+  theme_bw()+
+  labs(
+    title = "Lobster Fishing Pressure 2019-2021", 
+    x = "Sites",
+    y = "Count of Lobsters",
+    fill = "Fishing Pressure") +
+  theme(legend.position = "bottom")
+```
+
+
