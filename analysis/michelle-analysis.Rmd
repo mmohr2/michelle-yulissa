@@ -94,9 +94,11 @@ ggplot(data = lobster_size_lrg,
   xlab("Site")+
   ylab("Count")+
   ggtitle("Large vs. Small Lobsters Frequency by Site") +
-  theme(legend.position = "bottom", 
+  theme(plot.title = element_text(hjust = 0.5), 
+         legend.position = "bottom", 
         legend.title = element_blank())+
-  scale_y_continuous(breaks = seq(0, 800, 100))
+  scale_y_continuous(breaks = seq(0, 800, 100)) +
+scale_fill_manual(values = c("#008080", "#BC5443"))
 ```
 
 
