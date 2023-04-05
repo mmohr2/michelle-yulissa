@@ -1,6 +1,6 @@
 ---
 title: "michelle-analysis"
-author: "Yulissa T. Perez Rojas"
+author: "Michelle Mohr"
 date: "2023-04-05"
 output: html_document
 ---
@@ -9,22 +9,95 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Exercise: Explore, Clean, and Wrangle Data
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+Load libraries
+```{r load libraries}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+Read data
+```{r reading data}
+lobster_abundance <- read_csv("../data/Lobster_Abundance_All_Years_20220829.csv")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Convert missing values 
+```{r convert missing values}
+lobster_abundance <- lobster_abundance %>% 
+  mutate(Size_MM = na_if(SIZE_MM, -99999))
+```
+
+## Exercise: Data Visualization
+historgram
+```{r data visuals histograms}
+ggplot(data = lobster_abundance,
+       aes(x = SIZE_MM)) +
+      geom_histogram() + 
+  facet_wrap(~SITE)
+  
+```
+line graph
+```{r line graph}
+lobsters_summarize <- lobster_abundance %>% 
+group_by(SITE, YEAR) %>% 
+summarize(COUNT = n())
+```
+
+line plot
+```{r line plot}
+ggplot(data = lobsters_summarize, 
+       aes(x = YEAR, y =COUNT)) + 
+  geom_line(aes(color = SITE))
+```
+
+line and point plot 
+```{r line and point}
+ggplot(data = lobsters_summarize, 
+       aes(x = YEAR, y = COUNT)) +
+  geom_point(aes(color = SITE)) +
+  geom_line(aes(color = SITE))
+```
+
+bar graph
+```{r bar graph}
+lobster_size_lrg <- lobster_abundance %>% 
+  filter(YEAR %in% c(2019, 2020, 2021)) %>% 
+  mutate(SIZE_BIN = if_else(SIZE_MM <= 70, true = "small", false = "large")) %>% 
+  group_by(SITE, SIZE_BIN) %>% 
+  summarize(COUNT = n()) %>% 
+  drop_na()
+```
+```{r bar plot}
+ggplot(data = lobster_size_lrg, 
+       aes(x = SITE,
+           y = COUNT, 
+           fill = SIZE_BIN)) +
+  geom_col()
+```
+```{r dodged bar plot}
+ggplot(data = lobster_size_lrg,
+       aes(x = SITE, y = COUNT, 
+           fill = SIZE_BIN)) +
+  geom_col(position = "dodge")
+```
+
+Playing with Themes and visualizations
+```{r}
+ggplot(data = lobster_size_lrg,
+       aes(x = SITE, y = COUNT, 
+           fill = SIZE_BIN)) +
+  geom_col(position = "dodge") +
+  theme_bw()+
+  xlab("Site")+
+  ylab("Count")+
+  ggtitle("Large vs. Small Lobsters Frequency by Site") +
+  theme(legend.position = "bottom", 
+        legend.title = element_blank())+
+  scale_y_continuous(breaks = seq(0, 800, 100))
+```
+
+
+
