@@ -1,6 +1,6 @@
 ---
-title: "lobster-report"
-author: "Yulissa T. Perez Rojas"
+title: "Lobster Report"
+author: "Yulissa T. Perez Rojas and Michelle D. Mohr"
 date: "2023-04-05"
 output: html_document
 ---
@@ -9,22 +9,53 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Citation of Data
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+This data was obtained from [The EDI Data Portal](https://portal.edirepository.org/nis/mapbrowse?packageid=knb-lter-sbc.77.8)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Abstract
+Data on abundance, size and fishing pressure of California spiny lobster (Panulirus interruptus) are collected along the mainland coast of the Santa Barbara Channel. Spiny lobsters are an important predator in giant kelp forests off southern California. Two SBC LTER study reefs are located in or near the California Fish and Game Network of Marine Protected Areas (MPA), Naples and Isla Vista, both established as MPAs on 2012-01-01. MPAs provide a unique opportunity to investigate the effects of fishing on kelp forest community dynamics. Sampling began in 2012 and is ongoing.
 
-```{r cars}
-summary(cars)
+This dataset contains two tables. 1) Abundance and size data collected annually by divers in late summer before the start of the fishing season at five SBC LTER long term kelp forest study sites: two within MPAs (Naples and Isla Vista) and three outside (Arroyo Quemado, Mohawk and Carpinteria). 2) Fishing pressure, as determined by counting the number of commercial trap floats. Data are collected every two to four weeks during the lobster fishing season (October to March) at nine sites along the mainland, eight of which are also SBC LTER long-term kelp forest study reefs.
+
+## Data Analysis and Visualization
+
+### Lobster Abundance and Size
+## Exercise: Explore, Clean, and Wrangle Data
+
+Load libraries
+```{r load libraries}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+Read data
+```{r reading data}
+lobster_abundance <- read_csv("../data/Lobster_Abundance_All_Years_20220829.csv")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Convert missing values 
+```{r convert missing values}
+lobster_abundance <- lobster_abundance %>% 
+  mutate(Size_MM = na_if(SIZE_MM, -99999))
+```
+
+Plotting data
+Playing with Themes and visualizations
+```{r}
+ggplot(data = lobster_size_lrg,
+       aes(x = SITE, y = COUNT, 
+           fill = SIZE_BIN)) +
+  geom_col(position = "dodge") +
+  theme_bw()+
+  xlab("Site")+
+  ylab("Count")+
+  ggtitle("Large vs. Small Lobsters Frequency by Site") +
+  theme(plot.title = element_text(hjust = 0.5), 
+         legend.position = "bottom", 
+        legend.title = element_blank())+
+  scale_y_continuous(breaks = seq(0, 800, 100)) +
+scale_fill_manual(values = c("#008080", "#BC5443"))
+```
