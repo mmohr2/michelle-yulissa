@@ -29,6 +29,9 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
+library(leaflet)
+library(scales)
+library(ggmap)
 ```
 
 Read data
@@ -77,7 +80,7 @@ lobster_traps <- read_csv("data/Lobster_Trap_Counts_All_Years_20210519.csv")
 
 ```
 
-Convert missing values 
+Convert Missing values for lobster count
 ```{r convert missing values}
 
 clean_lobster_traps <- lobster_traps %>% 
@@ -106,4 +109,16 @@ ggplot(data = lobster_traps_fishing_pressure, aes(x = SITE, y = COUNT, fill = FI
   theme(legend.position = "bottom")
 ```
 
+## Mapping 
+Doesn't work
+
+```{r}
+ggplot(lobster_traps_fishing_pressure) +
+  geom_sf(aes(color = Site, shape = Site))+
+  labs(title = "Where Pikas are Located",
+       x = "Latidue",
+       y = "Longitude") +
+  theme(axis.text.x = element_text(angle = 45))
+
+```
 
