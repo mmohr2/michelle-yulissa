@@ -124,3 +124,8 @@ ggplot(lobster_traps_fishing_pressure) +
 
 ```
 
+```{r}
+leaflet() %>% 
+  addTiles() %>% 
+  addCircles(data = pikas_sf_4326, label = ~Station)
+```
